@@ -27,3 +27,6 @@ url_split = urlsplit(comics['img'])
 file_name = sanitize_filename(url_split.path)
 
 load_image(comics['img'], file_name)
+
+author_comment = comics['alt']
+print(author_comment)
