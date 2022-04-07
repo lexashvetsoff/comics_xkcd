@@ -1,9 +1,17 @@
+from tokenize import group
 import requests
 import os
 from urllib.parse import urlsplit
 from pathvalidate import sanitize_filename
+from dotenv import load_dotenv
+
+load_dotenv()
 
 URL_COMICS = 'https://xkcd.com/353/info.0.json'
+
+URL_API_VK = 'https://api.vk.com/method/groups.get'
+
+access_token = os.getenv('ACCESS_TOKEN')
 
 
 def load_image(url, filename, folder='images', params={}):
@@ -30,3 +38,15 @@ load_image(comics['img'], file_name)
 
 author_comment = comics['alt']
 print(author_comment)
+
+payload = {
+    'extended': 1,
+    'access_token': access_token,
+    'v': 5.131,
+}
+
+response = requests.get(URL_API_VK, params=payload)
+response.raise_for_status()
+
+groups = response.json()
+print(type(groups))
