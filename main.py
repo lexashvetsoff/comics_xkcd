@@ -124,6 +124,8 @@ def main():
 
     publication_img(owner_id, photo_id, group_id, author_comment, access_token)
 
+    os.remove(img_path)
+
 
 if __name__ == '__main__':
     main()
