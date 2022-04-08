@@ -66,8 +66,8 @@ def get_server(group_id, access_token):
     return response.json()['response']['upload_url']
 
 
-def upload_img_to_server(img_name, photo_server):
-    with open(img_name, 'rb') as file:
+def upload_img_to_server(img_path, photo_server):
+    with open(img_path, 'rb') as file:
         url = photo_server
         files = {
             'photo': file
@@ -117,9 +117,9 @@ def main():
     access_token = os.getenv('ACCESS_TOKEN')
     group_id = os.getenv('PUBLIC_ID')
 
-    img_name, author_comment = get_comics()
+    img_path, author_comment = get_comics()
     photo_server = get_server(group_id, access_token)
-    server, photo, hash = upload_img_to_server(img_name, photo_server)
+    server, photo, hash = upload_img_to_server(img_path, photo_server)
     owner_id, photo_id = save_img_to_server(group_id, server, photo, hash, access_token)
 
     publication_img(owner_id, photo_id, group_id, author_comment, access_token)
