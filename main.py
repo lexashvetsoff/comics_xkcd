@@ -110,7 +110,6 @@ def make_publication_img(owner_id, photo_id, group_id, author_comment, access_to
 
     response = requests.get(url_api_vk_publication_photo, params=payload)
     response.raise_for_status()
-    print(response.json())
 
 
 def main():
