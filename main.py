@@ -72,7 +72,9 @@ def upload_img_to_server(img_path, photo_server):
         response = requests.post(url, files=files)
         response.raise_for_status()
 
-    return response.json()['server'], response.json()['photo'], response.json()['hash']
+        server = response.json()
+
+    return server['server'], server['photo'], server['hash']
 
 
 def save_img_to_server(group_id, server, photo, hash, access_token):
