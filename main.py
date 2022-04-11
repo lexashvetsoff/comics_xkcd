@@ -9,8 +9,7 @@ from random import randint
 
 
 def load_image(url, filename, folder='images', params={}):
-    if not os.path.exists(folder):
-        os.makedirs(folder, exist_ok=True)
+    os.makedirs(folder, exist_ok=True)
 
     path = os.path.join(folder, filename)
 
