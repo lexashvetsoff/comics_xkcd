@@ -7,12 +7,6 @@ from pathvalidate import sanitize_filename
 from dotenv import load_dotenv
 from random import randint
 
-URL_LAST_COMICS = 'https://xkcd.com/info.0.json'
-
-URL_API_VK_PHOTO_SERVER = 'https://api.vk.com/method/photos.getWallUploadServer'
-URL_API_VK_SAVE_PHOTO = 'https://api.vk.com/method/photos.saveWallPhoto'
-URL_API_VK_PUBLICATION_PHOTO = 'https://api.vk.com/method/wall.post'
-
 
 def load_image(url, filename, folder='images', params={}):
     if not os.path.exists(folder):
@@ -36,7 +30,8 @@ def get_last_comics(url):
 
 
 def get_random_url_comics():
-    last_comics = get_last_comics(URL_LAST_COMICS)
+    url_last_comics = 'https://xkcd.com/info.0.json'
+    last_comics = get_last_comics(url_last_comics)
     num_comics = randint(1, last_comics)
     return f'https://xkcd.com/{num_comics}/info.0.json'
 
@@ -54,13 +49,15 @@ def get_comics():
 
 
 def get_server(group_id, access_token):
+    url_api_vk_photo_server = 'https://api.vk.com/method/photos.getWallUploadServer'
+
     payload = {
         'group_id': group_id,
         'access_token': access_token,
         'v': 5.131
     }
 
-    response = requests.get(URL_API_VK_PHOTO_SERVER, params=payload)
+    response = requests.get(url_api_vk_photo_server, params=payload)
     response.raise_for_status()
 
     return response.json()['response']['upload_url']
@@ -80,6 +77,8 @@ def upload_img_to_server(img_path, photo_server):
 
 
 def save_img_to_server(group_id, server, photo, hash, access_token):
+    url_api_vk_save_photo = 'https://api.vk.com/method/photos.saveWallPhoto'
+
     payload = {
         'group_id': group_id,
         'server': server,
@@ -89,13 +88,15 @@ def save_img_to_server(group_id, server, photo, hash, access_token):
         'v': 5.131,
     }
 
-    response = requests.post(URL_API_VK_SAVE_PHOTO, params=payload)
+    response = requests.post(url_api_vk_save_photo, params=payload)
     response.raise_for_status()
 
     return response.json()['response'][0]['owner_id'], response.json()['response'][0]['id']
 
 
 def publication_img(owner_id, photo_id, group_id, author_comment, access_token):
+    url_api_vk_publication_photo = 'https://api.vk.com/method/wall.post'
+
     attachments = 'photo{}_{}'.format(owner_id, photo_id)
     payload = {
         'owner_id': -int(group_id),
@@ -106,7 +107,7 @@ def publication_img(owner_id, photo_id, group_id, author_comment, access_token):
         'v': 5.131
     }
 
-    response = requests.get(URL_API_VK_PUBLICATION_PHOTO, params=payload)
+    response = requests.get(url_api_vk_publication_photo, params=payload)
     response.raise_for_status()
     print(response.json())
 
