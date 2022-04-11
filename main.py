@@ -22,7 +22,7 @@ def load_image(url, filename, folder='images', params={}):
     return path
 
 
-def get_last_comics(url):
+def get_last_number_comics(url):
     response = requests.get(url)
     response.raise_for_status()
     return response.json()['num']
@@ -30,7 +30,7 @@ def get_last_comics(url):
 
 def get_random_url_comics():
     url_last_comics = 'https://xkcd.com/info.0.json'
-    last_comics = get_last_comics(url_last_comics)
+    last_comics = get_last_number_comics(url_last_comics)
     num_comics = randint(1, last_comics)
     return f'https://xkcd.com/{num_comics}/info.0.json'
 
