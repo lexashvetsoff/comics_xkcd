@@ -95,7 +95,7 @@ def save_img_to_server(group_id, server, photo, hash, access_token):
     return response.json()['response'][0]['owner_id'], response.json()['response'][0]['id']
 
 
-def publication_img(owner_id, photo_id, group_id, author_comment, access_token):
+def make_publication_img(owner_id, photo_id, group_id, author_comment, access_token):
     url_api_vk_publication_photo = 'https://api.vk.com/method/wall.post'
 
     attachments = 'photo{}_{}'.format(owner_id, photo_id)
@@ -125,7 +125,7 @@ def main():
         server, photo, photo_hash = upload_img_to_server(img_path, photo_server)
         owner_id, photo_id = save_img_to_server(group_id, server, photo, photo_hash, access_token)
 
-        publication_img(owner_id, photo_id, group_id, author_comment, access_token)
+        make_publication_img(owner_id, photo_id, group_id, author_comment, access_token)
     finally:
         os.remove(img_path)
 
