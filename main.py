@@ -114,17 +114,18 @@ def publication_img(owner_id, photo_id, group_id, author_comment, access_token):
 def main():
     load_dotenv()
     
-    access_token = os.getenv('ACCESS_TOKEN')
-    group_id = os.getenv('PUBLIC_ID')
+    try:
+        access_token = os.getenv('ACCESS_TOKEN')
+        group_id = os.getenv('PUBLIC_ID')
 
-    img_path, author_comment = get_comics()
-    photo_server = get_server(group_id, access_token)
-    server, photo, hash = upload_img_to_server(img_path, photo_server)
-    owner_id, photo_id = save_img_to_server(group_id, server, photo, hash, access_token)
+        img_path, author_comment = get_comics()
+        photo_server = get_server(group_id, access_token)
+        server, photo, hash = upload_img_to_server(img_path, photo_server)
+        owner_id, photo_id = save_img_to_server(group_id, server, photo, hash, access_token)
 
-    publication_img(owner_id, photo_id, group_id, author_comment, access_token)
-
-    os.remove(img_path)
+        publication_img(owner_id, photo_id, group_id, author_comment, access_token)
+    finally:
+        os.remove(img_path)
 
 
 if __name__ == '__main__':
