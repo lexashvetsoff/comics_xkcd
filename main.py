@@ -1,11 +1,19 @@
-from tokenize import group
-from urllib import response
 import requests
 import os
 from urllib.parse import urlsplit
 from pathvalidate import sanitize_filename
 from dotenv import load_dotenv
 from random import randint
+
+
+def get_status(response):
+    if 'error' in response.json():
+        err = response.json()['error']
+        error_cod = err['error_code']
+        error_text = err['error_msg']
+        message_error = f'Код ошибки: {error_cod}, {error_text}'
+        print(message_error)
+        raise requests.HTTPError
 
 
 def load_image(url, filename, folder='images', params={}):
@@ -59,6 +67,8 @@ def get_server(group_id, access_token):
     response = requests.get(url_api_vk_photo_server, params=payload)
     response.raise_for_status()
 
+    get_status(response)
+
     return response.json()['response']['upload_url']
 
 
@@ -72,25 +82,29 @@ def upload_img_to_server(img_path, photo_server):
         response = requests.post(url, files=files)
         response.raise_for_status()
 
+        get_status(response)
+
         server = response.json()
 
     return server['server'], server['photo'], server['hash']
 
 
-def save_img_to_server(group_id, server, photo, hash, access_token):
+def save_img_to_server(group_id, server, photo, photo_hash, access_token):
     url_api_vk_save_photo = 'https://api.vk.com/method/photos.saveWallPhoto'
 
     payload = {
         'group_id': group_id,
         'server': server,
         'photo': photo,
-        'hash': hash,
+        'hash': photo_hash,
         'access_token': access_token,
         'v': 5.131,
     }
 
     response = requests.post(url_api_vk_save_photo, params=payload)
     response.raise_for_status()
+
+    get_status(response)
 
     return response.json()['response'][0]['owner_id'], response.json()['response'][0]['id']
 
@@ -111,6 +125,8 @@ def make_publication_img(owner_id, photo_id, group_id, author_comment, access_to
     response = requests.get(url_api_vk_publication_photo, params=payload)
     response.raise_for_status()
 
+    get_status(response)
+
 
 def main():
     load_dotenv()
@@ -121,10 +137,12 @@ def main():
 
         img_path, author_comment = get_comics()
         photo_server = get_server(group_id, access_token)
-        server, photo, photo_hash = upload_img_to_server(img_path, photo_server)
-        owner_id, photo_id = save_img_to_server(group_id, server, photo, photo_hash, access_token)
+        # server, photo, photo_hash = upload_img_to_server(img_path, photo_server)
+        # owner_id, photo_id = save_img_to_server(group_id, server, photo, photo_hash, access_token)
 
-        make_publication_img(owner_id, photo_id, group_id, author_comment, access_token)
+        # make_publication_img(owner_id, photo_id, group_id, author_comment, access_token)
+    except requests.HTTPError:
+        print('Error')
     finally:
         os.remove(img_path)
 
