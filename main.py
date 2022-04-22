@@ -137,10 +137,10 @@ def main():
 
         img_path, author_comment = get_comics()
         photo_server = get_server(group_id, access_token)
-        # server, photo, photo_hash = upload_img_to_server(img_path, photo_server)
-        # owner_id, photo_id = save_img_to_server(group_id, server, photo, photo_hash, access_token)
+        server, photo, photo_hash = upload_img_to_server(img_path, photo_server)
+        owner_id, photo_id = save_img_to_server(group_id, server, photo, photo_hash, access_token)
 
-        # make_publication_img(owner_id, photo_id, group_id, author_comment, access_token)
+        make_publication_img(owner_id, photo_id, group_id, author_comment, access_token)
     except requests.HTTPError:
         print('Error')
     finally:
