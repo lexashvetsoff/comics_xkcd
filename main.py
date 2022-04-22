@@ -7,8 +7,9 @@ from random import randint
 
 
 def get_status(response):
-    if 'error' in response.json():
-        err = response.json()['error']
+    unpacked_response = response.json()
+    if 'error' in unpacked_response:
+        err = unpacked_response['error']
         error_cod = err['error_code']
         error_text = err['error_msg']
         message_error = f'Код ошибки: {error_cod}, {error_text}'
