@@ -6,7 +6,7 @@ from dotenv import load_dotenv
 from random import randint
 
 
-def get_status(response):
+def check_errors(response):
     unpacked_response = response.json()
     if 'error' in unpacked_response:
         raise requests.HTTPError
@@ -63,7 +63,7 @@ def get_server(group_id, access_token):
     response = requests.get(url_api_vk_photo_server, params=payload)
     response.raise_for_status()
 
-    get_status(response)
+    check_errors(response)
 
     return response.json()['response']['upload_url']
 
@@ -78,7 +78,7 @@ def upload_img_to_server(img_path, photo_server):
         response = requests.post(url, files=files)
         response.raise_for_status()
 
-        get_status(response)
+        check_errors(response)
 
         server = response.json()
 
@@ -100,7 +100,7 @@ def save_img_to_server(group_id, server, photo, photo_hash, access_token):
     response = requests.post(url_api_vk_save_photo, params=payload)
     response.raise_for_status()
 
-    get_status(response)
+    check_errors(response)
 
     return response.json()['response'][0]['owner_id'], response.json()['response'][0]['id']
 
@@ -121,7 +121,7 @@ def make_publication_img(owner_id, photo_id, group_id, author_comment, access_to
     response = requests.get(url_api_vk_publication_photo, params=payload)
     response.raise_for_status()
 
-    get_status(response)
+    check_errors(response)
 
 
 def main():
